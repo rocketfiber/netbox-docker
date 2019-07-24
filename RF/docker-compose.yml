@@ -2,7 +2,7 @@ version: '3'
 services:
   netbox: &netbox
     build:
-      context: .
+      context: ..
       args:
         - BRANCH=${VERSION-master}
     image: netboxcommunity/netbox:${VERSION-latest}
@@ -10,7 +10,7 @@ services:
     #- postgres
     - redis
     - netbox-worker
-    env_file: env/netbox.env
+    env_file: netbox.env
     volumes:
     - ./startup_scripts:/opt/netbox/startup_scripts:z,ro
     - ./initializers:/opt/netbox/initializers:z,ro
@@ -28,6 +28,7 @@ services:
     - /opt/netbox/netbox/manage.py
     command:
     - rqworker
+  restart: always
   nginx:
     command: nginx -c /etc/netbox-nginx/nginx.conf
     image: nginx:1.15-alpine
@@ -49,7 +50,7 @@ services:
     - sh
     - -c # this is to evaluate the $REDIS_PASSWORD from the env
     - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
-    env_file: env/netbox.env
+    env_file: netbox.env
     volumes:
     - netbox-redis-data:/data
 volumes:

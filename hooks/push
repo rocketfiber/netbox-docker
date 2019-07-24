@@ -1,5 +1,0 @@
-#!/bin/bash
-
-. hooks/common
-
-run_build --push-only
